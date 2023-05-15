@@ -3,8 +3,9 @@
 
 #include <initializer_list>
 #include <iostream>
-#include <iterator>
+//#include <iterator>
 #include <limits>
+#include"s21_vector.h"
 #include <queue>  // не забыть поменять на нашу
 
 namespace s21 {
@@ -181,7 +182,7 @@ namespace s21 {
 
 		// Bonus function
 		template <typename... Args>
-		std::vector<pair> Emplace(Args&&... args);
+		Vector<pair> Emplace(Args&&... args);
 
 		// Print
 		void PrintMap();
@@ -294,6 +295,7 @@ namespace s21 {
 		else {
 			pair top = Search(value.first);
 			if (top.second) {
+				delete tmp;
 				return std::make_pair(iterator(root_), false);
 			}
 			else {
@@ -361,11 +363,12 @@ namespace s21 {
 
 	template<class Key, class T>
 	template<typename ...Args>
-	std::vector<std::pair<typename Map<Key, T>::iterator, bool>> Map<Key, T>::Emplace(Args && ...args) { // заменить на наш вектор???
+	Vector<typename Map<Key,T>::pair> Map<Key, T>::Emplace(Args && ...args) { // заменить на наш вектор???
 		std::initializer_list<value_type> items{ args... };
-		std::vector<pair> res;
+		Vector<pair> res;
+		
 		for (auto it = items.begin(); it != items.end(); ++it) {
-			res.push_back(insert(*it));
+			res.Push_back(Insert(*it));
 		}
 		return res;
 	}
@@ -441,7 +444,6 @@ namespace s21 {
 		--it;
 		iterator p(it.current_->parent);
 
-
 		if (it.current_->left) {
 			if (it->first > p->first) { p.current_->right = it.current_->left; }
 			else { p.current_->left = it.current_->left; }
@@ -479,11 +481,6 @@ namespace s21 {
 		}
 		return std::make_pair(iterator(top), false);
 	}
-
-
-
 } // namespace s21
 
 #endif  // SRC_S21_MAP_H_
-
-
