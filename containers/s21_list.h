@@ -1,11 +1,9 @@
-﻿#ifndef SRC_S21_LIST_H_
-#define SRC_S21_LIST_H_
+﻿#ifndef SRC_CONTAINERS_S21_LIST_H_
+#define SRC_CONTAINERS_S21_LIST_H_
 
 #include <initializer_list>
-#include <iostream>
 #include <iterator>
 #include <limits>
-#include <list>
 
 namespace s21 {
 template <class T>
@@ -20,16 +18,16 @@ class List {
     Node(Args&&... args) : value_(std::forward<Args>(args)...){};
   };
 
-  //	 Internal class ListIterator
+  // Internal class ListIterator
   class ListIterator {
     friend class List;
 
    public:
-    using pointer = Node*;
-    using value_type = T;
-    using size_type = size_t;
+    using Pointer = Node*;
+    using ValueType = T;
+    using SizeType = size_t;
     ListIterator() = default;
-    explicit ListIterator(pointer obj) : it_(obj){};
+    explicit ListIterator(Pointer obj) : it_(obj){};
 
     ListIterator& operator++() noexcept {
       it_ = it_->next_;
@@ -47,14 +45,14 @@ class List {
       return *this;
     };
 
-    ListIterator& operator+(size_type n) noexcept {
+    ListIterator& operator+(SizeType n) noexcept {
       while (n--) {
         it_ = it_->next_;
       }
       return *this;
     };
 
-    value_type& operator*() const noexcept { return it_->value_; }
+    ValueType& operator*() const noexcept { return it_->value_; }
 
     bool operator!=(const ListIterator& other) const noexcept {
       return (it_ != other.it_);
@@ -65,19 +63,19 @@ class List {
     }
 
    private:
-    pointer it_ = nullptr;
+    Pointer it_ = nullptr;
   };
 
-  //	 Internal class ListConstIterator
+  // Internal class ListConstIterator
   class ListConstIterator {
     friend class List;
 
    public:
-    using pointer = Node*;
-    using value_type = T;
-    using size_type = size_t;
+    using Pointer = Node*;
+    using ValueType = T;
+    using SizeType = size_t;
     ListConstIterator() = default;
-    explicit ListConstIterator(pointer obj) : it_(obj){};
+    explicit ListConstIterator(Pointer obj) : it_(obj){};
 
     ListConstIterator& operator++() noexcept {
       it_ = it_->next_;
@@ -95,14 +93,14 @@ class List {
       return *this;
     };
 
-    ListConstIterator& operator+(size_type n) noexcept {
+    ListConstIterator& operator+(SizeType n) noexcept {
       while (n--) {
         it_ = it_->next_;
       }
       return *this;
     };
 
-    const value_type& operator*() const noexcept { return it_->value_; }
+    const ValueType& operator*() const noexcept { return it_->value_; }
 
     bool operator!=(const ListConstIterator& other) const noexcept {
       return (it_ != other.it_);
@@ -113,80 +111,79 @@ class List {
     }
 
    private:
-    pointer it_ = nullptr;
+    Pointer it_ = nullptr;
   };
 
   // List Member type
-  using value_type = T;
-  using reference = T&;
-  using const_reference = const T&;
-  using size_type = size_t;
-  using pointer = Node*;
-  using iterator = ListIterator;
-  using const_iterator = ListConstIterator;
+  using ValueType = T;
+  using Reference = T&;
+  using ConstReference = const T&;
+  using SizeType = size_t;
+  using Pointer = Node*;
+  using Iterator = ListIterator;
+  using ConstIterator = ListConstIterator;
 
   // List Functions
   List() = default;
-  explicit List(size_type n);
-  List(std::initializer_list<value_type> const& items);
+  explicit List(SizeType n);
+  List(std::initializer_list<ValueType> const& items);
   List(const List& l);
-  List(List&& l);
+  List(List&& l) noexcept;
   ~List();
-  List& operator=(List&& l);
+  List& operator=(List&& l) noexcept;
 
   // List Element access
-  const_reference Front() const;
-  const_reference Back() const;
+  ConstReference Front() const;
+  ConstReference Back() const;
 
   // List Iterators
-  iterator Begin();
-  iterator End();
-  const_iterator Cbegin() const;
-  const_iterator Cend() const;
+  Iterator Begin();
+  Iterator End();
+  ConstIterator Cbegin() const;
+  ConstIterator Cend() const;
 
   // List Capacity
   bool Empty() const;
-  size_type Size() const;
-  size_type MaxSize();
+  SizeType Size() const;
+  SizeType MaxSize();
 
   // List Modifiers
   void Clear();
-  iterator Insert(iterator pos, const_reference value);
-  void Erase(iterator pos);
-  void PushBack(const_reference value);
+  Iterator Insert(Iterator pos, ConstReference value);
+  void Erase(Iterator pos);
+  void PushBack(ConstReference value);
   void PopBack();
-  void PushFront(const_reference value);
+  void PushFront(ConstReference value);
   void PopFront();
   void Swap(List& other);
   void Merge(List& other);
-  void Splice(const_iterator pos, List& other);
+  void Splice(ConstIterator pos, List& other);
   void Reverse();
   void Unique();
   void Sort();
-  void PrintList();
 
   template <typename... Args>
-  iterator Emplace(const_iterator pos, Args&&... args);
+  Iterator Emplace(ConstIterator pos, Args&&... args);
   template <typename... Args>
   void EmplaceBack(Args&&... args);
   template <typename... Args>
   void EmplaceFront(Args&&... args);
 
  private:
-  pointer head_ = nullptr;
-  pointer tail_ = nullptr;
-  size_t size_{};
+  Pointer head_ = nullptr;
+  Pointer tail_ = nullptr;
+  SizeType size_{};
 };
 
 template <class T>
-List<T>::List(size_type n) {
+List<T>::List(SizeType n) {
   while (n--) {
     PushBack(0);
   }
 }
 
 template <class T>
-inline List<T>::List(std::initializer_list<value_type> const& items) {
+inline List<T>::List(std::initializer_list<ValueType> const& items) {
   for (auto it = items.begin(); it != items.end(); it++) {
     PushBack(*it);
   }
@@ -194,13 +191,13 @@ inline List<T>::List(std::initializer_list<value_type> const& items) {
 
 template <class T>
 List<T>::List(const List& l) {
-  for (const_iterator it = l.Cbegin(); it != l.Cend(); ++it) {
+  for (ConstIterator it = l.Cbegin(); it != l.Cend(); ++it) {
     PushBack(*it);
   }
 }
 
 template <class T>
-List<T>::List(List&& l) {
+List<T>::List(List&& l) noexcept {
   Swap(l);
 }
 
@@ -210,46 +207,46 @@ List<T>::~List() {
 }
 
 template <class T>
-List<T>& List<T>::operator=(List&& l) {
-  this.Clear();
+List<T>& List<T>::operator=(List&& l) noexcept {
+  this->Clear();
   Swap(l);
   return *this;
 }
 
 template <class T>
-typename List<T>::const_reference List<T>::Front() const {
+typename List<T>::ConstReference List<T>::Front() const {
   if (Empty()) {
-    throw std::out_of_range("List is empty");
+    throw std::out_of_range("Container is empty");
   }
   return head_->value_;
 }
 
 template <class T>
-typename List<T>::const_reference List<T>::Back() const {
+typename List<T>::ConstReference List<T>::Back() const {
   if (Empty()) {
-    throw std::out_of_range("List is empty");
+    throw std::out_of_range("Container is empty");
   }
   return tail_->value_;
 }
 
 template <class T>
-typename List<T>::iterator List<T>::Begin() {
-  return iterator(head_);
+typename List<T>::Iterator List<T>::Begin() {
+  return Iterator(head_);
 }
 
 template <class T>
-typename List<T>::iterator List<T>::End() {
-  return iterator();
+typename List<T>::Iterator List<T>::End() {
+  return Iterator();
 }
 
 template <class T>
-typename List<T>::const_iterator List<T>::Cbegin() const {
-  return const_iterator(head_);
+typename List<T>::ConstIterator List<T>::Cbegin() const {
+  return ConstIterator(head_);
 }
 
 template <class T>
-typename List<T>::const_iterator List<T>::Cend() const {
-  return const_iterator();
+typename List<T>::ConstIterator List<T>::Cend() const {
+  return ConstIterator();
 }
 
 template <class T>
@@ -258,13 +255,13 @@ bool List<T>::Empty() const {
 }
 
 template <class T>
-typename List<T>::size_type List<T>::Size() const {
+typename List<T>::SizeType List<T>::Size() const {
   return size_;
 }
 
 template <class T>
-typename List<T>::size_type List<T>::MaxSize() {
-  return std::numeric_limits<size_type>::max() / sizeof(Node);
+typename List<T>::SizeType List<T>::MaxSize() {
+  return std::numeric_limits<SizeType>::max() / sizeof(Node);
 }
 
 template <class T>
@@ -275,16 +272,15 @@ void List<T>::Clear() {
 }
 
 template <class T>
-typename List<T>::iterator List<T>::Insert(iterator pos,
-                                           const_reference value) {
+typename List<T>::Iterator List<T>::Insert(Iterator pos, ConstReference value) {
   if (pos == End()) {
     PushBack(value);
-    return iterator(tail_);
+    return Iterator(tail_);
   } else if (pos == Begin()) {
     PushFront(value);
   } else {
-    pointer current_node = pos.it_;
-    pointer new_node = new Node(value);
+    Pointer current_node = pos.it_;
+    Pointer new_node = new Node(value);
     current_node->prev_->next_ = new_node;
     new_node->prev_ = current_node->prev_;
     current_node->prev_ = new_node;
@@ -295,8 +291,8 @@ typename List<T>::iterator List<T>::Insert(iterator pos,
 }
 
 template <class T>
-void List<T>::Erase(iterator pos) {
-  pointer tmp = pos.it_;
+void List<T>::Erase(Iterator pos) {
+  Pointer tmp = pos.it_;
   if (tmp == nullptr) {
     throw std::out_of_range("Iterator is NULL");
   }
@@ -313,8 +309,8 @@ void List<T>::Erase(iterator pos) {
 }
 
 template <class T>
-void List<T>::PushBack(const_reference value) {
-  pointer node = new Node(value);
+void List<T>::PushBack(ConstReference value) {
+  Pointer node = new Node(value);
   if (Empty()) {
     head_ = tail_ = node;
   } else {
@@ -340,8 +336,8 @@ void List<T>::PopBack() {
 }
 
 template <class T>
-void List<T>::PushFront(const_reference value) {
-  pointer node = new Node(value);
+void List<T>::PushFront(ConstReference value) {
+  Pointer node = new Node(value);
   if (Empty()) {
     head_ = tail_ = node;
   } else {
@@ -378,14 +374,13 @@ void List<T>::Merge(List& other) {
   if (Empty() && !other.Empty()) {
     Swap(other);
   } else if (!Empty() && !other.Empty()) {
-    const_iterator pos = Cend();
+    ConstIterator pos = Cend();
     Splice(pos, other);
   }
-  Sort();
 }
 
 template <class T>
-void List<T>::Splice(const_iterator pos, List& other) {
+void List<T>::Splice(ConstIterator pos, List& other) {
   if (!other.Empty()) {
     if (Empty()) {
       head_ = other.head_;
@@ -399,7 +394,7 @@ void List<T>::Splice(const_iterator pos, List& other) {
       other.head_->prev_ = tail_;
       tail_ = other.tail_;
     } else {
-      pointer tmp = pos.it_;
+      Pointer tmp = pos.it_;
       tmp->prev_->next_ = other.head_;
       other.head_->prev_ = tmp->prev_;
       tmp->prev_ = other.tail_;
@@ -414,8 +409,7 @@ void List<T>::Splice(const_iterator pos, List& other) {
 template <class T>
 void List<T>::Unique() {
   if (Size() > 1) {
-    Sort();
-    iterator first = Begin(), second = Begin() + 1;
+    Iterator first = Begin(), second = Begin() + 1;
     while (second != End()) {
       if (*first == *second) {
         Erase(second);
@@ -431,8 +425,8 @@ void List<T>::Unique() {
 template <class T>
 void List<T>::Reverse() {
   std::swap(head_, tail_);
-  for (iterator i(head_); i != End(); ++i) {
-    pointer tmp = i.it_;
+  for (Iterator i(head_); i != End(); ++i) {
+    Pointer tmp = i.it_;
     std::swap(tmp->next_, tmp->prev_);
   }
 }
@@ -440,8 +434,8 @@ void List<T>::Reverse() {
 template <class T>
 void List<T>::Sort() {
   if (Size() > 1) {
-    iterator stop = Begin() + (Size() - 1);
-    for (iterator first = Begin(); first != stop; --stop) {
+    Iterator stop = Begin() + (Size() - 1);
+    for (Iterator first = Begin(); first != stop; --stop) {
       bool flag = true;
       auto second = Begin() + 1;
       for (; first != stop; ++first, ++second) {
@@ -457,64 +451,38 @@ void List<T>::Sort() {
 }
 
 template <class T>
-void List<T>::PrintList() {
-  iterator it_begin = Begin(), it_end = End();
-  for (; it_begin != it_end; ++it_begin) {
-    std::cout << *it_begin << "\t";
-  }
-  std::cout << "\n";
-}
-
-template <class T>
 template <typename... Args>
-typename List<T>::iterator List<T>::Emplace(const_iterator pos,
-                                            Args&&... args) {
+typename List<T>::Iterator List<T>::Emplace(ConstIterator pos, Args&&... args) {
   if (pos == Cbegin()) {
     EmplaceFront(args...);
-    return iterator(head_);
+    return Iterator(head_);
   } else if (pos == Cend()) {
     EmplaceBack(args...);
-    return iterator(tail_);
+    return Iterator(tail_);
   } else {
-    pointer new_node = new Node{value_type(std::forward<Args>(args)...)};
-    pointer current = pos.it_;
+    Pointer new_node = new Node{ValueType(std::forward<Args>(args)...)};
+    Pointer current = pos.it_;
     current->prev_->next_ = new_node;
     new_node->prev_ = current->prev_;
     current->prev_ = new_node;
     new_node->next_ = current;
     size_++;
-    return iterator(new_node);
+    return Iterator(new_node);
   }
 }
 
 template <class T>
 template <typename... Args>
 void List<T>::EmplaceBack(Args&&... args) {
-  pointer new_node = new Node(std::forward<Args>(args)...);
-  if (Empty()) {
-    head_ = tail_ = new_node;
-  } else {
-    tail_->next_ = new_node;
-    new_node->prev_ = tail_;
-    tail_ = new_node;
-  }
-  size_++;
+  PushBack(std::forward<Args>(args)...);
 }
 
 template <class T>
 template <typename... Args>
 void List<T>::EmplaceFront(Args&&... args) {
-  pointer new_node = new Node(std::forward<Args>(args)...);
-  if (Empty()) {
-    head_ = tail_ = new_node;
-  } else {
-    head_->prev_ = new_node;
-    new_node->next_ = head_;
-    head_ = new_node;
-  }
-  size_++;
+  PushFront(std::forward<Args>(args)...);
 }
 
 }  // namespace s21
 
-#endif  // SRC_S21_LIST_H_
+#endif  // SRC_CONTAINERS_S21_LIST_H_
